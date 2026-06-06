@@ -40,8 +40,7 @@ jobs:
       - name: Construir e Enviar imagem Docker
         run: |-
           gcloud builds submit ./leca-store-backend \
-            --config=./leca-store-backend/cloudbuild.yaml \
-            --substitutions=_TAG=${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+            --tag=${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Implantar no Cloud Run
         run: |-
