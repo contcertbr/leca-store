@@ -1,0 +1,8 @@
+# This file tells Docker which files to NOT include in the container image.
+
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore

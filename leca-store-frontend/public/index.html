@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leca Store - Portal de Leads</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <!-- Scripts de inicialização automática do Firebase -->
+    <!-- Estes scripts usam URLs reservados que são substituídos pelo Firebase Hosting no momento do deploy -->
+    <!-- com a configuração correta para o seu projeto. -->
+    <script src="/__/firebase/9.6.1/firebase-app-compat.js"></script>
+    <script src="/__/firebase/9.6.1/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+
+</head>
+<body>
+    <div id="auth-ui">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Senha">
+        <button id="login-btn">Entrar</button>
+        <p id="auth-error" style="color: red;"></p>
+    </div>
+
+    <div id="leads-dashboard" style="display: none;">
+        <h2>Leads do Mercado Livre e Instagram</h2>
+        <button id="logout-btn">Sair</button>
+        <div id="integrations">
+            <h3>Integrações</h3>
+            <a href="http://localhost:8080/api/mercadolivre/auth" target="_blank" id="ml-auth-link">Conectar com Mercado Livre</a>
+            <div style="margin-top: 10px;">
+                <input type="text" id="ml-seller-id" placeholder="Seu Seller ID do ML">
+                <button id="sync-ml-products-btn">Sincronizar Produtos do ML</button>
+            </div>
+        </div>
+        <div id="leads-list">
+            <!-- Leads serão carregados aqui -->
+        </div>
+    </div>
+
+    <!-- Seu script da aplicação deve ser carregado DEPOIS dos scripts do Firebase -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+# Este workflow constrói e implanta uma aplicação em container no Google Cloud Run.
+# Ele é acionado a cada push na branch 'main'.
+
+name: Build and Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ "main" ]
+
+# Variáveis de ambiente disponíveis para todos os jobs e passos neste workflow.
+env:
+  SERVICE_NAME: leca-store-backend # Nome do seu serviço no Cloud Run
+  REPO_NAME: leca-store-repo      # Nome do seu repositório no Artifact Registry
+  REGION: southamerica-east1      # Região do GCP para seu serviço e repositório
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+
+    # Concede ao GITHUB_TOKEN as permissões necessárias para obter um token OIDC
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Autenticar no Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WIF_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SA_EMAIL }}'
+
+      - name: Configurar o Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Construir e Enviar imagem Docker
+        run: |-
+          gcloud builds submit ./leca-store-backend \
+            --config=./leca-store-backend/cloudbuild.yaml \
+            --substitutions=_TAG=${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+      - name: Implantar no Cloud Run
+        run: |-
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --no-allow-unauthenticated
+
+      - name: 'Usar a gcloud CLI'
+        run: 'gcloud info'
