@@ -1,9 +1,0 @@
-steps:
-# Este passo usa o Docker para construir a imagem do container.
-# O '.' no final significa que ele usará o Dockerfile no diretório atual.
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '${_TAG}', '.']
-
-# A imagem construída é automaticamente enviada para o Artifact Registry.
-images:
-- '${_TAG}'
